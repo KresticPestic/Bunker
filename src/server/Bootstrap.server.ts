@@ -14,3 +14,5 @@ for (const UI of ReplicatedFirst.UI.GetChildren()) {
 		NewUI.Parent = PlayerGui;
 	}
 }
+
+print("end");
