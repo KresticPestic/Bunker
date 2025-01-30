@@ -8,19 +8,19 @@ local Class_Wall = _Room_Sturcture.Class_Wall
 local _Enums = TS.import(script, game:GetService("ServerScriptService"), "TS", "Labirint_System", "Enums")
 local ENUMRoom_Direction = _Enums.ENUMRoom_Direction
 local ENUMRoom_TYPE = _Enums.ENUMRoom_TYPE
-local Labirint
+local Class_Labirint
 do
-	Labirint = setmetatable({}, {
+	Class_Labirint = setmetatable({}, {
 		__tostring = function()
-			return "Labirint"
+			return "Class_Labirint"
 		end,
 	})
-	Labirint.__index = Labirint
-	function Labirint.new(...)
-		local self = setmetatable({}, Labirint)
+	Class_Labirint.__index = Class_Labirint
+	function Class_Labirint.new(...)
+		local self = setmetatable({}, Class_Labirint)
 		return self:constructor(...) or self
 	end
-	function Labirint:constructor(StartRoom_Position, RoomsValue, MaxFloors)
+	function Class_Labirint:constructor(StartRoom_Position, RoomsValue, MaxFloors)
 		self.MaxFloors = MaxFloors
 		self.TimeLoad = 0
 		self.Status = false
@@ -51,7 +51,7 @@ do
 		self.StartRoom.Floor = 0
 		self:Ganerate()
 	end
-	function Labirint:Set_WorldRoomsFOLDER()
+	function Class_Labirint:Set_WorldRoomsFOLDER()
 		local WorldRoomsFOLDER = Workspace:FindFirstChild("WorldRoomsFOLDER")
 		if WorldRoomsFOLDER then
 			return nil
@@ -62,7 +62,7 @@ do
 			exports.WorldRooms_FOLDER = self.WorldRoomsFOLDER
 		end
 	end
-	function Labirint:Get_RandomRoom()
+	function Class_Labirint:Get_RandomRoom()
 		local TotalWeight = 0
 		local TotalRoom = false
 		-- ▼ ReadonlyArray.forEach ▼
@@ -100,7 +100,7 @@ do
 		end
 		return TotalRoom
 	end
-	function Labirint:Get_ConnectPoints()
+	function Class_Labirint:Get_ConnectPoints()
 		local ConnectPoints = {}
 		for _, Room in self.Room_Clases do
 			if Room.ConnectPoints[1] ~= nil then
@@ -113,7 +113,7 @@ do
 		end
 		return ConnectPoints
 	end
-	function Labirint:Set_Room(Room, PrevRoom, Point, Position)
+	function Class_Labirint:Set_Room(Room, PrevRoom, Point, Position)
 		local Check
 		if Position then
 			Check = Room:Set_Room(self.WorldRoomsFOLDER, PrevRoom, Position, self.MaxFloors)
@@ -132,7 +132,7 @@ do
 			return false
 		end
 	end
-	function Labirint:Restart()
+	function Class_Labirint:Restart()
 		local _exp = self.Room_Clases
 		-- ▼ ReadonlyArray.forEach ▼
 		local _callback = function(Room, index)
@@ -151,7 +151,7 @@ do
 			return self:Restart()
 		end
 	end
-	function Labirint:Set_EndRoom(Prevroom)
+	function Class_Labirint:Set_EndRoom(Prevroom)
 		local PrevRoom = Prevroom
 		local End = false
 		while End == false do
@@ -194,7 +194,7 @@ do
 			end
 		end
 	end
-	function Labirint:Get_Path()
+	function Class_Labirint:Get_Path()
 		local ChuncksValue = math.round(self.Chuncks / 4)
 		print(ChuncksValue)
 		local TotalChuncks = 0
@@ -272,7 +272,7 @@ do
 			return self:Get_Path()
 		end
 	end
-	function Labirint:Ganerate()
+	function Class_Labirint:Ganerate()
 		local Path = self:Get_Path()
 		if Path then
 			print("1")
@@ -348,5 +348,5 @@ do
 		end
 	end
 end
-exports.Labirint = Labirint
+exports.Class_Labirint = Class_Labirint
 return exports
