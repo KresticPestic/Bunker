@@ -6,7 +6,7 @@ import { Interface_ConnectPoint, Interface_Room } from "./Interfaces";
 
 export let WorldRooms_FOLDER: Folder;
 
-export class Labirint {
+export class Class_Labirint {
 	MaxFloors: number;
 	Status: boolean;
 	WorldRoomsFOLDER!: Folder;
