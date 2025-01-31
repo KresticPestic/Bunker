@@ -2,17 +2,21 @@
 local TS = require(game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("RuntimeLib"))
 local _services = TS.import(script, game:GetService("ReplicatedStorage"), "rbxts_include", "node_modules", "@rbxts", "services")
 local Players = _services.Players
-local ReplicatedFirst = _services.ReplicatedFirst
-local Class_Labirint = TS.import(script, game:GetService("ServerScriptService"), "TS", "Labirint_System", "Labirint_Class").Class_Labirint
-local Labirint = Class_Labirint.new(Vector3.new(0, 50, 0), 100, 3)
-while Labirint.Status == false do
-	task.wait()
-end
-for _, UI in ReplicatedFirst.UI:GetChildren() do
-	for _1, Player in Players:GetChildren() do
-		local PlayerGui = Player:WaitForChild("PlayerGui")
-		local NewUI = UI:Clone()
-		NewUI.Parent = PlayerGui
+local ServerStorage = _services.ServerStorage
+local Workspace = _services.Workspace
+local Class_Teleporter = TS.import(script, game:GetService("ServerScriptService"), "TS", "Teleporter", "Class_Teleporter").Class_Teleporter
+local Teleports_Positions = Workspace.Teleport_Positions:GetChildren()
+local Teleporters_Assets = ServerStorage.Teleporters_Assets
+local Teleportes = {}
+for _, Position in Teleports_Positions do
+	local Teleport = Teleporters_Assets:FindFirstChild(Position.Name)
+	if Teleport then
+		local _class_Teleporter = Class_Teleporter.new(Teleport, Position.CFrame)
+		table.insert(Teleportes, 1, _class_Teleporter)
+	else
+		warn("не удалось найти телепорт!")
 	end
 end
-print("end")
+Players.PlayerAdded:Connect(function(Player)
+	Player:LoadCharacter()
+end)
