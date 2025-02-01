@@ -4,7 +4,8 @@ import { Class_Labirint } from "./Labirint_System/Labirint_Class";
 const Labirint = new Class_Labirint(new Vector3(0, 50, 0), 100, 3);
 
 while (Labirint.Status === false) {
-	task.wait();
+	task.wait(1);
+	print("1");
 }
 
 for (const UI of ReplicatedFirst.UI.GetChildren()) {
@@ -15,4 +16,6 @@ for (const UI of ReplicatedFirst.UI.GetChildren()) {
 	}
 }
 
-print("end");
+for (const Player of Players.GetChildren()) {
+	if (Player.IsA("Player")) Player.LoadCharacter();
+}

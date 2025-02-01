@@ -202,9 +202,7 @@ do
 		local Restart = false
 		local TotalTime = 0
 		local interval = math.round(ChuncksValue / self.MaxFloors)
-		print("interval", interval)
 		ChuncksValue = math.round(interval * self.MaxFloors + self.MaxFloors + interval / 2)
-		print(ChuncksValue)
 		local TotalInterval = 0
 		task.spawn(function()
 			while Restart == false and TotalChuncks < ChuncksValue do
@@ -275,7 +273,6 @@ do
 	function Class_Labirint:Ganerate()
 		local Path = self:Get_Path()
 		if Path then
-			print("1")
 			local TotalTime = 0
 			local Restart = false
 			task.spawn(function()

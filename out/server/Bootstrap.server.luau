@@ -6,7 +6,8 @@ local ReplicatedFirst = _services.ReplicatedFirst
 local Class_Labirint = TS.import(script, game:GetService("ServerScriptService"), "TS", "Labirint_System", "Labirint_Class").Class_Labirint
 local Labirint = Class_Labirint.new(Vector3.new(0, 50, 0), 100, 3)
 while Labirint.Status == false do
-	task.wait()
+	task.wait(1)
+	print("1")
 end
 for _, UI in ReplicatedFirst.UI:GetChildren() do
 	for _1, Player in Players:GetChildren() do
@@ -15,4 +16,8 @@ for _, UI in ReplicatedFirst.UI:GetChildren() do
 		NewUI.Parent = PlayerGui
 	end
 end
-print("end")
+for _, Player in Players:GetChildren() do
+	if Player:IsA("Player") then
+		Player:LoadCharacter()
+	end
+end

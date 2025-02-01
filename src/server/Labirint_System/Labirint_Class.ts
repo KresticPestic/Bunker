@@ -144,9 +144,9 @@ export class Class_Labirint {
 
 		let TotalTime: number = 0;
 		const interval = math.round(ChuncksValue / this.MaxFloors);
-		print("interval", interval);
+
 		ChuncksValue = math.round(interval * this.MaxFloors + this.MaxFloors + interval / 2);
-		print(ChuncksValue);
+
 		let TotalInterval = 0;
 
 		task.spawn(() => {
@@ -211,7 +211,6 @@ export class Class_Labirint {
 		const Path = this.Get_Path();
 
 		if (Path) {
-			print("1");
 			let TotalTime: number = 0;
 			let Restart = false;
 			task.spawn(() => {
