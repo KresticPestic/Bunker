@@ -1,8 +1,9 @@
 import { PathfindingService } from "@rbxts/services";
-import { Interface_Move, Interface_NPC } from "./Interfaces";
+import { Interface_NPCMove, Interface_NPC, Interface_Speed } from "./Interfaces";
 
-export class Class_Move implements Interface_Move {
+export class Class_Move implements Interface_NPCMove {
 	private NPC: Interface_NPC;
+	declare Speed: Interface_Speed;
 	declare Pathfinding: Path;
 
 	private Get_Path(StartPosition: Vector3, FinishPosition: Vector3): PathWaypoint[] | undefined {
@@ -23,7 +24,8 @@ export class Class_Move implements Interface_Move {
 
 	Move(Target: Vector3) {}
 
-	constructor(AgentParameters: AgentParameters, Class_NPC: Interface_NPC) {
+	constructor(AgentParameters: AgentParameters, Class_NPC: Interface_NPC, Speed: Interface_Speed) {
+		this.Speed = Speed;
 		this.Pathfinding = PathfindingService.CreatePath(AgentParameters);
 		this.NPC = Class_NPC;
 	}
