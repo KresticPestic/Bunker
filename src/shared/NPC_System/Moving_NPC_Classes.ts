@@ -6,7 +6,7 @@ export class Class_Move implements Interface_NPCMove {
 	declare Speed: Interface_Speed;
 	declare Pathfinding: Path;
 
-	private Get_Path(StartPosition: Vector3, FinishPosition: Vector3): PathWaypoint[] | undefined {
+	Get_Path(StartPosition: Vector3, FinishPosition: Vector3): PathWaypoint[] | undefined {
 		this.Pathfinding.GetWaypoints().clear();
 		const ok = pcall(() => {
 			this.Pathfinding.ComputeAsync(StartPosition, FinishPosition);
@@ -22,7 +22,13 @@ export class Class_Move implements Interface_NPCMove {
 		}
 	}
 
-	Move(Target: Vector3) {}
+	Move(Position: Vector3, Humanoid: Humanoid) {
+		Humanoid.MoveTo(Position);
+		while (this.NPC.TargetCharacter !== undefined) {
+			task.wait();
+			if (Humanoid.MoveToFinished) break;
+		}
+	}
 
 	constructor(AgentParameters: AgentParameters, Class_NPC: Interface_NPC, Speed: Interface_Speed) {
 		this.Speed = Speed;

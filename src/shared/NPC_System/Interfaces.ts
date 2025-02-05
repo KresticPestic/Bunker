@@ -5,12 +5,15 @@ export interface Interface_Speed {
 
 export interface Interface_NPCVision {
 	Max_LookDistance: number;
-	TargetCharacter: Model | false;
+	TargetCharacter: Model | undefined;
+	Get_TargetCharacter(): Model | undefined;
 }
 
 export interface Interface_NPCMove {
 	Speed: Interface_Speed;
 	Pathfinding: Path;
+	Get_Path(StartPosition: Vector3, FinishPosition: Vector3): PathWaypoint[] | undefined;
+	Move(Position: Vector3, Humanoid: Humanoid): void;
 }
 
 export interface Interface_Setting {
@@ -20,6 +23,7 @@ export interface Interface_Setting {
 }
 
 export interface Interface_NPC {
+	TargetCharacter: Model | undefined;
 	HumanoidRootPart: BasePart;
 	Humanoid: Humanoid;
 	Model: Model;

@@ -6,36 +6,48 @@ export class Class_DafaulVision implements Interface_NPCVision {
 	private RayParams: RaycastParams;
 	private RenderRayPart?: BasePart;
 
-	declare TargetCharacter: Model | false;
+	declare TargetCharacter: Model | undefined;
 	declare Max_LookDistance: number;
 
 	private CheckVisible(Character: Model) {
-		const Head = Character.FindFirstChild("Head") as BasePart;
+		///Проверка на видимость игрока
+		const Head = this.NPC.Model.FindFirstChild("Head") as BasePart;
+
 		for (const detal of Character.GetChildren()) {
 			if (
-				detal.Name !== "HumanoidRootPart" &&
-				(detal.IsA("BasePart") || detal.IsA("MeshPart") || detal.IsA("UnionOperation"))
+				(detal.Name !== "HumanoidRootPart" && detal.IsA("BasePart")) ||
+				detal.IsA("MeshPart") ||
+				detal.IsA("UnionOperation")
 			) {
 				const ray = Workspace.Raycast(Head.Position, detal.Position.sub(Head.Position), this.RayParams);
-				if (ray && this.RenderRayPart) {
-					this.RenderRayPart.Position = ray.Position;
-				}
+				if (ray) {
+					//print(ray.Instance.Name);
+					///
+					if (this.RenderRayPart) this.RenderRayPart.Position = ray.Instance.Position;
+					///
 
-				if (ray && ray.Instance === detal) {
-					return true;
+					if (ray.Instance && ray.Instance === detal) {
+						print(true);
+						return true;
+					}
 				}
 			} else if (detal.IsA("Accessory")) {
 				const DETAL = detal.Parent?.FindFirstChild("Head") as BasePart;
 				const ray = Workspace.Raycast(Head.Position, Head.Position.sub(DETAL.Position), this.RayParams);
 				if (ray && ray.Instance === DETAL) {
+					print(true);
 					return true;
 				}
 			}
 		}
+		print(false);
+
 		return false;
 	}
 
 	private Change_TargetCharacter(NewCharacter: Model) {
+		///Выставление игрока которого видет нпс
+
 		if (this.TargetCharacter) {
 			const HumanoidRootPart = NewCharacter.FindFirstChild("HumanoidRootPart") as BasePart;
 			const NearHumanoidRootPart = this.TargetCharacter.FindFirstChild("HumanoidRootPart") as BasePart;
@@ -47,14 +59,42 @@ export class Class_DafaulVision implements Interface_NPCVision {
 		} else this.TargetCharacter = NewCharacter;
 	}
 
+	Get_TargetCharacter() {
+		let NONE = true;
+
+		for (const Player of Players.GetChildren() as Player[]) {
+			const Character = Player.Character || Player.CharacterAdded.Wait()[0];
+			if (Character) {
+				const Head = Character.FindFirstChild("Head") as BasePart;
+				const NPCHead = this.NPC.Model.FindFirstChild("Head") as BasePart;
+				const NPCToCharacter = NPCHead.Position.sub(Head.Position).Unit;
+				const Distance = NPCHead.Position.sub(Head.Position).Magnitude;
+				const Character_LookVector = NPCHead.CFrame.LookVector;
+				const DotProduct = NPCToCharacter.Dot(Character_LookVector);
+
+				if (-DotProduct > -0.3 && Distance < this.Max_LookDistance) {
+					const CheckVisible = this.CheckVisible(Character);
+
+					if (CheckVisible) {
+						this.Change_TargetCharacter(Character);
+						NONE = false;
+					}
+
+					break;
+				}
+			}
+		}
+		if (NONE) this.TargetCharacter = undefined;
+		return this.TargetCharacter;
+	}
+
 	constructor(NPC: Interface_NPC, MaxLookDistance: number, Rendering: boolean) {
 		this.Max_LookDistance = MaxLookDistance;
-		this.TargetCharacter = false;
+		this.TargetCharacter = undefined;
 		this.NPC = NPC;
 
 		if (Rendering) {
 			this.RenderRayPart = new Instance("Part");
-
 			this.RenderRayPart.Name = "RenderRayPart";
 			this.RenderRayPart.BrickColor = BrickColor.Red();
 			this.RenderRayPart.Anchored = false;
@@ -64,6 +104,7 @@ export class Class_DafaulVision implements Interface_NPCVision {
 			this.RenderRayPart.CollisionGroup = "RayCast";
 			this.RenderRayPart.Size = new Vector3(1, 1, 1);
 			this.RenderRayPart.Parent = this.NPC.Model;
+			this.RenderRayPart.Anchored = true;
 		}
 
 		////
@@ -78,32 +119,5 @@ export class Class_DafaulVision implements Interface_NPCVision {
 		this.RayParams.FilterType = Enum.RaycastFilterType.Exclude;
 		this.RayParams.FilterDescendantsInstances = Filter;
 		this.RayParams.CollisionGroup = "RayCast";
-
-		////\
-
-		coroutine.wrap(() => {
-			while (this.NPC.Model) {
-				task.wait();
-
-				for (const Player of Players.GetChildren() as Player[]) {
-					const Character = Player.Character;
-					if (Character) {
-						const Head = Character.FindFirstChild("Head") as BasePart;
-						const NPCHead = this.NPC.Model.FindFirstChild("Head") as BasePart;
-						const NPCToCharacter = NPCHead.Position.sub(Head.Position).Unit;
-						const Distance = NPCHead.Position.sub(Head.Position).Magnitude;
-						const Character_LookVector = Head.CFrame.LookVector;
-						const DotProduct = NPCToCharacter.Dot(Character_LookVector);
-						if (-DotProduct > -0.3 && Distance < this.Max_LookDistance) {
-							const CheckVisible = this.CheckVisible(Character);
-							if (CheckVisible) this.Change_TargetCharacter(Character);
-							break;
-						}
-					}
-				}
-				this.TargetCharacter = false;
-			}
-			return;
-		})();
 	}
 }
